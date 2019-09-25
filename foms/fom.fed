@@ -1,0 +1,58 @@
+;; A comment in the test file, just to show I'm cool ;;
+(FED
+  (Federation producer-consumer)
+  (FEDversion v1.3)
+  (spaces
+    (space TestSpace
+      (dimension TestDimension)
+    )
+    (space OtherSpace
+      (dimension OtherDimension)
+    )
+  )
+
+  (interactions
+    (class InteractionRoot realiable timestamp
+      (class MoznaZajacStolik
+        (parameter nrStolik)
+      )
+      (class ZajecieStolika
+        (parameter ileMiejsc)
+        (parameter nrStolika)
+      )
+      (class StolikWolny
+        (parameter nrStolika)
+      )
+      (class StolikZajety
+        (parameter nrStolika)
+      )
+      (class WejscieDoKolejki
+        (parameter nrKlienta)
+      )
+      (class RozpoczecieObslugi
+        (parameter nrStolik)
+      )
+      (class Niecierpliwienie
+        (parameter czyNiecierpliwy)
+      )
+      (class ZlozenieZamowienia
+        (parameter listaPosilkow)
+        (parameter maxCzasRealizacji)
+        (class RealizacjaZamowienia
+          (parameter status)
+        )
+      )
+      (class KoniecObslugi
+        (parameter nrStolik)
+        (class Platnosc
+          (parameter kwota)
+          (parameter rodzaj)
+          (class ZwolenienieStolika
+            (parameter ileMiejsc)
+          )
+        )
+      )
+    )
+  )
+
+)
