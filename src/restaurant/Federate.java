@@ -9,6 +9,8 @@ import hla.rti1516e.time.HLAfloat64TimeFactory;
 import org.portico.impl.hla1516e.types.time.DoubleTime;
 import org.portico.impl.hla1516e.types.time.DoubleTimeInterval;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Random;
 
 
@@ -23,7 +25,20 @@ public class Federate {
         System.out.println("Federate : " + message);
     }
 
-
+    public void waitForUser()
+    {
+        log( " >>>>>>>>>> Press Enter to Continue <<<<<<<<<<" );
+        BufferedReader reader = new BufferedReader( new InputStreamReader(System.in) );
+        try
+        {
+            reader.readLine();
+        }
+        catch( Exception e )
+        {
+            log( "Error while waiting for user input: " + e.getMessage() );
+            e.printStackTrace();
+        }
+    }
 
     public void runFederate( String federateName ) throws Exception
     {
