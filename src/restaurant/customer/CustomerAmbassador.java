@@ -8,11 +8,10 @@ public class CustomerAmbassador extends Ambassador {
 
     public CustomerFederate federate;
     protected InteractionClassHandle enterQueueHandle;
-    protected InteractionClassHandle exitQueueHandle;
     protected InteractionClassHandle impatientHandle;
     protected InteractionClassHandle takingTableHandle;
     protected InteractionClassHandle placeOrderHandle;
-    protected InteractionClassHandle leaveTableHandle;
+    protected InteractionClassHandle leavingTableHandle;
 
     protected InteractionClassHandle possibleTakeTableHandle;
     protected InteractionClassHandle startServiceHandle;

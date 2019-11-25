@@ -1,4 +1,8 @@
 package restaurant.waiter;
 
-public class Waiter {
+import restaurant.Federate;
+
+public class Waiter{
+
+
 }

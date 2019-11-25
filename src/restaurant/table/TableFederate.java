@@ -11,28 +11,28 @@ public class TableFederate extends Federate {
 
     private void publishAndSubscribe() throws NameNotFound, NotConnected, RTIinternalError, FederateNotExecutionMember, FederateServiceInvocationsAreBeingReportedViaMOM, InteractionClassNotDefined, RestoreInProgress, SaveInProgress {
 
-        InteractionClassHandle freeTableInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.freeTable");
-        fedamb.freeTableHandle = freeTableInteractionHandle;
+        InteractionClassHandle tableFreeInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.tableFree");
+        fedamb.tableFreeHandle = tableFreeInteractionHandle;
 
-        InteractionClassHandle occupiedTableInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.occupiedTable");
-        fedamb.occupiedTableHandle = occupiedTableInteractionHandle;
+        InteractionClassHandle tableOccupiedInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.tableOccupied");
+        fedamb.tableOccupiedHandle = tableOccupiedInteractionHandle;
 
         //-------------------------------------------------------------------------------------------------------------------------
 
         InteractionClassHandle takingTableInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.takingTable");
         fedamb.takingTableHandle = takingTableInteractionHandle;
 
-        InteractionClassHandle leaveTableInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.leaveTable");
-        fedamb.leaveTableHandle = leaveTableInteractionHandle;
+        InteractionClassHandle leavingTableInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.leavingTable");
+        fedamb.leavingTableHandle = leavingTableInteractionHandle;
 
 
 
-        rtiamb.publishInteractionClass(freeTableInteractionHandle);
-        rtiamb.publishInteractionClass(occupiedTableInteractionHandle);
+        rtiamb.publishInteractionClass(tableFreeInteractionHandle);
+        rtiamb.publishInteractionClass(tableOccupiedInteractionHandle);
 
         //-------------------------------------------------------------
         rtiamb.subscribeInteractionClass(takingTableInteractionHandle);
-        rtiamb.subscribeInteractionClass(leaveTableInteractionHandle);
+        rtiamb.subscribeInteractionClass(leavingTableInteractionHandle);
 
     }
 }

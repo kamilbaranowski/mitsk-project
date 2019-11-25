@@ -7,12 +7,12 @@ import restaurant.customer.CustomerFederate;
 public class TableAmbassador extends Ambassador {
 
     public TableFederate federate;
-    protected InteractionClassHandle freeTableHandle;
-    protected InteractionClassHandle occupiedTableHandle;
+    protected InteractionClassHandle tableFreeHandle;
+    protected InteractionClassHandle tableOccupiedHandle;
 
 
     protected InteractionClassHandle takingTableHandle;
-    protected InteractionClassHandle leaveTableHandle;
+    protected InteractionClassHandle leavingTableHandle;
 
 
 
