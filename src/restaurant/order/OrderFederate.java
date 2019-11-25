@@ -2,15 +2,17 @@ package restaurant.order;
 
 import hla.rti.FederationExecutionAlreadyExists;
 import hla.rti1516e.CallbackModel;
+import hla.rti1516e.InteractionClassHandle;
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.exceptions.*;
 import restaurant.Federate;
 
 import java.io.File;
 import java.net.MalformedURLException;
 
-public class OrderFederate extends Federate {
+public class OrderFederate extends Federate{
 
-    private OrderAmbassador fedOrderAmb;
+    private OrderAmbassador fedamb;
     private final double timeStep = 10.0;
 
     private int orderIterator;
@@ -31,8 +33,8 @@ public class OrderFederate extends Federate {
         encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
 
         log("Connecting ... ");
-        fedOrderAmb = new OrderAmbassador(this);
-        rtiamb.connect(fedOrderAmb, CallbackModel.HLA_EVOKED);
+        fedamb = new OrderAmbassador(this);
+        rtiamb.connect(fedamb, CallbackModel.HLA_EVOKED);
 
         try
         {
@@ -48,6 +50,28 @@ public class OrderFederate extends Federate {
         }
 
         rtiamb.joinFederationExecution( federateName,"CarFederateType" ,"ExampleFederation" );
+
+
+
+    }
+
+
+    private void publishAndSubscribe() throws NameNotFound, NotConnected, RTIinternalError, FederateNotExecutionMember, FederateServiceInvocationsAreBeingReportedViaMOM, InteractionClassNotDefined, RestoreInProgress, SaveInProgress {
+        InteractionClassHandle orderExecutionInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.orderExecution");
+        fedamb.orderExecutionHandle = orderExecutionInteractionHandle;
+
+        //-----------------------------------------------------------------------------------------
+
+        InteractionClassHandle placeOrderInteractionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.placeOrder");
+        fedamb.placeOrderHandle = placeOrderInteractionHandle;
+
+
+
+
+        rtiamb.publishInteractionClass(orderExecutionInteractionHandle);
+
+        //------------------------------------------------------------------
+        rtiamb.subscribeInteractionClass(placeOrderInteractionHandle);
 
 
 
