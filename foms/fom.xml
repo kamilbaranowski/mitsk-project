@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<objectModel xsi:schemaLocation="http://standards.ieee.org/IEEE1516-2010 http://standards.ieee.org/downloads/1516/1516.2-2010/IEEE1516-DIF-2010.xsd" xmlns="http://standards.ieee.org/IEEE1516-2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelIdentification>
+        <name>RESTAURANT SIMULATION</name>
+        <type>FOM</type>
+        <version>2.0</version>
+        <modificationDate>2019-06-08</modificationDate>
+        <securityClassification>Unclassified</securityClassification>
+        <purpose>Academic</purpose>
+        <applicationDomain>All domains</applicationDomain>
+        <description>Represents car tanking</description>
+    </modelIdentification>
+    <objects>
+        <objectClass>
+            <name>HLAobjectRoot</name>
+        </objectClass>
+    </objects>
+    <interactions>
+        <interactionClass>
+            <name>HLAinteractionRoot</name>
+
+            <interactionClass>
+                <name>startService</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>poczatek obslugi</semantics>
+                <parameter>
+                    <name>tableNumber</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>numer stolika</semantics>
+                </parameter>
+            </interactionClass>
+
+            <interactionClass>
+                <name>endService</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>koniec obslugi</semantics>
+                <parameter>
+                    <name>tableNumber</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>numer stolika</semantics>
+                </parameter>
+
+                <interactionClass>
+                    <name>payment</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <transportation>HLAreliable</transportation>
+                    <order>TimeStamp</order>
+                    <semantics>platnosc</semantics>
+                    <parameter>
+                        <name>type</name>
+                        <dataType>HLAASCIIstring</dataType>
+                        <semantics>forma platnosci</semantics>
+                    </parameter>
+                    <parameter>
+                        <name>amount</name>
+                        <dataType>HLAinteger32BE</dataType>
+                        <semantics>kwota do zaplaty</semantics>
+                    </parameter>
+
+                    <interactionClass>
+                        <name>leavingTable</name>
+                        <sharing>PublishSubscribe</sharing>
+                        <transportation>HLAreliable</transportation>
+                        <order>TimeStamp</order>
+                        <semantics>zwolnienie stolika</semantics>
+                        <parameter>
+                            <name>freedSeats</name>
+                            <dataType>HLAinteger32BE</dataType>
+                            <semantics>liczba zwolnionych miejsc przy stoliku</semantics>
+                        </parameter>
+                        <!-- ????
+                        <parameter>
+                            <name>tableNumber</name>
+                            <dataType>HLAinteger32BE</dataType>
+                            <semantics>identyfikator stolika</semantics>
+                        </parameter>
+                        -->
+                    </interactionClass>
+                </interactionClass>
+            </interactionClass>
+
+
+
+            <interactionClass>
+                <name>takingTable</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>zajecie stolika</semantics>
+                <parameter>
+                    <name>occupiedSeats</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>liczba zajetych miejsc przy stoliku</semantics>
+                </parameter>
+                <parameter>
+                    <name>tableNumber</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>identyfikator stolika</semantics>
+                </parameter>
+
+            </interactionClass>
+
+
+
+            <interactionClass>
+                <name>placeOrder</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>zlozenie zamowienia</semantics>
+                <parameter>
+                    <name>dishList</name>
+                    <dataType>HLAvariableArray</dataType>
+                    <semantics>lista zamowionych posilkow</semantics>
+                </parameter>
+                <parameter>
+                    <name>maxRealizationTime</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>czas realizacji zamowienia</semantics>
+                </parameter>
+
+                <interactionClass>
+                    <name>orderExecution</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <transportation>HLAreliable</transportation>
+                    <order>TimeStamp</order>
+                    <semantics>realizcja zamowienia</semantics>
+                    <parameter>
+                        <name>status</name>
+                        <dataType>HLAASCIIstring</dataType>
+                        <semantics>status zamowienia</semantics>
+                    </parameter>
+                </interactionClass>
+            </interactionClass>
+
+
+
+            <interactionClass>
+                <name>enterQueue</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>wejscie klienta do kolejki</semantics>
+                <parameter>
+                    <name>customerNumber</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>identyfikator klienta</semantics>
+                </parameter>
+            </interactionClass>
+
+            <interactionClass>
+                <name>impatient</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>niecierpliwienie klienta</semantics>
+                <parameter>
+                    <name>ifImpatient</name>
+                    <dataType>HLAboolean</dataType>
+                    <semantics>okresla czy klient w kolejce jest niecierpliwy</semantics>
+                </parameter>
+            </interactionClass>
+
+            <interactionClass>
+                <name>tableFree</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>stolik wolny</semantics>
+                <parameter>
+                    <name>tableNumber</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>identyfikator stolika</semantics>
+                </parameter>
+            </interactionClass>
+
+            <interactionClass>
+                <name>tableOccupied</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>stolik zajety</semantics>
+                <parameter>
+                    <name>tableNumber</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>identyfikator stolika</semantics>
+                </parameter>
+            </interactionClass>
+
+            <interactionClass>
+                <name>possibleTakeTable</name>
+                <sharing>PublishSubscribe</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>mozliwosc zajecia stolika</semantics>
+                <parameter>
+                    <name>tableNumberList</name>
+                    <dataType>HLAvariableArray</dataType>
+                    <semantics>identyfikatory wolnych stolikow</semantics>
+                </parameter>
+            </interactionClass>
+
+        </interactionClass>
+    </interactions>
+
+    <dimensions/>
+    <synchronizations/>
+    <transportations/>
+    <updateRates/>
+    <dataTypes>
+        <basicDataRepresentations/>
+        <simpleDataTypes/>
+        <enumeratedDataTypes/>
+        <arrayDataTypes/>
+        <fixedRecordDataTypes/>
+        <variantRecordDataTypes/>
+    </dataTypes>
+    <notes/>
+
+</objectModel>
