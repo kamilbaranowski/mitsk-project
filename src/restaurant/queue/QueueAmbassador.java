@@ -75,6 +75,8 @@ public class QueueAmbassador extends Ambassador {
     }
 
     public Customer getFirstCustomer(){
-        return customersInQueue.stream().findFirst().orElseThrow(() -> new NullPointerException("No customers in queue!!"));
+        Customer customer = customersInQueue.stream().findFirst().orElseThrow(() -> new NullPointerException("No customers in queue!!"));
+        customersInQueue.remove(customer);
+        return customer;
     }
 }

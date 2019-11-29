@@ -85,8 +85,8 @@ public class QueueFederate extends Federate {
 
             if (!fedamb.getCustomersInQueue().isEmpty()){
                 if (customersInRestaurant.size() < avalibleTablesInRestaurant) {
-                    /*Customer customer = fedamb.getFirstCustomer();
-                    int freeTableIndex = customersInRestaurant.stream()
+                    Customer customer = fedamb.getFirstCustomer();
+                    /*int freeTableIndex = customersInRestaurant.stream()
                             .filter((x)-> x.equals(false))
                             .collect(Collectors.toList())
                             .indexOf(false);
@@ -95,8 +95,8 @@ public class QueueFederate extends Federate {
                     log("\nCustomer: " + customer.getCustomerNumber() + " entering to the restaurant");
                     //interakcja mozna zajac stolik*/
 
-                    customersInRestaurant.add(fedamb.getFirstCustomer());
-                    sendPossibleTakeTableInteraction(customersInRestaurant.size());
+                    customersInRestaurant.add(customer);
+                    sendPossibleTakeTableInteraction(customersInRestaurant.size(), customer.getCustomerNumber());
                 }
                 else{
                     log("\nNo free seats in restaurant!");
@@ -120,18 +120,20 @@ public class QueueFederate extends Federate {
     }
 
 
-    private void sendPossibleTakeTableInteraction(int freeTableNumber) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+    private void sendPossibleTakeTableInteraction(int freeTableNumber, int customerNumber) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
         ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
 
         HLAinteger32BE tableNumberValue = encoderFactory.createHLAinteger32BE(freeTableNumber);
+        HLAinteger32BE customerNumberValue = encoderFactory.createHLAinteger32BE(customerNumber);
 
         InteractionClassHandle interactionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.possibleTakeTable");
 
         ParameterHandle tableNumberHandle = rtiamb.getParameterHandle( interactionHandle,"tableNumber" );
-
+        ParameterHandle customerNumberHandle = rtiamb.getParameterHandle( interactionHandle,"customerNumber" );
         parameters.put(tableNumberHandle, tableNumberValue.toByteArray());
+        parameters.put(customerNumberHandle, customerNumberValue.toByteArray());
 
-        log("Sending, take table with id: " + freeTableNumber);
+        log("Sending, take table with id: " + freeTableNumber + " to Customer: " + customerNumber);
         HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
         rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
     }
