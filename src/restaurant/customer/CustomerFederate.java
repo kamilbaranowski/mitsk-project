@@ -169,17 +169,14 @@ public class CustomerFederate extends Federate {
                 customersQueue.add(new Customer(++customerIterator));
                 sendEnterQueueInteraction(customerIterator);
             }
-            /* TODO: new interactions to handle
-            if(fedamb.externalEvents.size() > 0) { // new interactions to handle
-                fedamb.externalEvents.sort(new ExternalEvent.ExternalEventComparator());
-                for (ExternalEvent externalEvent : fedamb.externalEvents) {
-                    switch (externalEvent.getEventType()) {
-                        case START:
-                            inServiceList.add(getCarFromQueue(externalEvent.getCarNumber()));
-                            break;
-                    }
-                }
-            }*/
+
+            if (!fedamb.getCustomerMap().isEmpty()){
+                int customersToHandle = fedamb.getCustomerMap().size();
+                Customer customer = fedamb.removeFirstCustomer();
+
+                //log("size of MAP" + customersToHandle);
+                log("\nGetting customer with id: " + customer.getCustomerNumber());
+            }
         }
 
 }

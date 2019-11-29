@@ -4,14 +4,22 @@ import hla.rti1516e.*;
 import hla.rti1516e.exceptions.*;
 import restaurant.Ambassador;
 import restaurant.ExternalEvent;
+import restaurant.table.Table;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CustomerAmbassador extends Ambassador {
 
     protected ArrayList<ExternalEvent> externalEvents = new ArrayList<>();
 
     public CustomerFederate federate;
+    //private int keyMapValue = 0;
+    private Map<Table, Customer> customerMap = new LinkedHashMap<>();
+
+
     protected InteractionClassHandle enterQueueHandle;
     protected InteractionClassHandle impatientHandle;
     protected InteractionClassHandle takingTableHandle;
@@ -43,8 +51,10 @@ public class CustomerAmbassador extends Ambassador {
 
         if (interactionClass.equals(possibleTakeTableHandle)){
         ParameterHandle tableNumberHandle = null;
+        ParameterHandle customerNumberHandle = null;
         try {
             tableNumberHandle = federate.rtiamb.getParameterHandle(interactionClass, "tableNumber");
+            customerNumberHandle = federate.rtiamb.getParameterHandle(interactionClass, "customerNumber");
         } catch (NameNotFound nameNotFound) {
             nameNotFound.printStackTrace();
         } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
@@ -58,8 +68,23 @@ public class CustomerAmbassador extends Ambassador {
         }
 
             int tableNumber = decodeInt(theParameters.get(tableNumberHandle));
-            builder.append("\nCustomer taking table with id: " + tableNumber);
+            int customerNumber = decodeInt(theParameters.get(customerNumberHandle));
+
+            customerMap.put(new Table(tableNumber), new Customer(customerNumber));
+            builder.append("\nCustomer: "+ customerNumber+" taking table with id: " + tableNumber);
             log(builder.toString());
         }
+    }
+
+    public Map<Table, Customer> getCustomerMap() {
+        return customerMap;
+    }
+
+    public Customer removeFirstCustomer() throws Exception {
+        Map.Entry<Table, Customer> entry = customerMap.entrySet().iterator().next();
+        Table key = entry.getKey();
+        Customer value = entry.getValue();
+        customerMap.remove(key);
+        return value;
     }
 }
