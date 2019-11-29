@@ -198,8 +198,8 @@
                 <order>TimeStamp</order>
                 <semantics>mozliwosc zajecia stolika</semantics>
                 <parameter>
-                    <name>tableNumberList</name>
-                    <dataType>HLAvariableArray</dataType>
+                    <name>tableNumber</name>
+                    <dataType>HLAinteger32BE</dataType>
                     <semantics>identyfikatory wolnych stolikow</semantics>
                 </parameter>
             </interactionClass>

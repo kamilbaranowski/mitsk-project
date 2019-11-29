@@ -1,7 +1,7 @@
 package restaurant.customer;
 
 import hla.rti1516e.*;
-import hla.rti1516e.exceptions.FederateInternalError;
+import hla.rti1516e.exceptions.*;
 import restaurant.Ambassador;
 import restaurant.ExternalEvent;
 
@@ -36,6 +36,30 @@ public class CustomerAmbassador extends Ambassador {
                                    OrderType sentOrdering, TransportationTypeHandle theTransport,
                                    LogicalTime theTime, OrderType receivedOrdering,
                                    SupplementalReceiveInfo receiveInfo) throws FederateInternalError {
-        log("Interaction received @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ blah");
+
+
+        StringBuilder builder = new StringBuilder( "Interaction Received:" );
+        double time = theTime!=null?convertTime(theTime):-1;
+
+        if (interactionClass.equals(possibleTakeTableHandle)){
+        ParameterHandle tableNumberHandle = null;
+        try {
+            tableNumberHandle = federate.rtiamb.getParameterHandle(interactionClass, "tableNumber");
+        } catch (NameNotFound nameNotFound) {
+            nameNotFound.printStackTrace();
+        } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
+            invalidInteractionClassHandle.printStackTrace();
+        } catch (FederateNotExecutionMember federateNotExecutionMember) {
+            federateNotExecutionMember.printStackTrace();
+        } catch (NotConnected notConnected) {
+            notConnected.printStackTrace();
+        } catch (RTIinternalError rtIinternalError) {
+            rtIinternalError.printStackTrace();
+        }
+
+            int tableNumber = decodeInt(theParameters.get(tableNumberHandle));
+            builder.append("\nCustomer taking table with id: " + tableNumber);
+            log(builder.toString());
+        }
     }
 }

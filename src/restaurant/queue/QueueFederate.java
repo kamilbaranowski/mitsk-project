@@ -1,26 +1,25 @@
 package restaurant.queue;
 
-import hla.rti1516e.CallbackModel;
-import hla.rti1516e.InteractionClassHandle;
-import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.*;
+import hla.rti1516e.encoding.HLAinteger32BE;
 import hla.rti1516e.exceptions.*;
+import hla.rti1516e.time.HLAfloat64Time;
 import hla.rti1516e.time.HLAfloat64TimeFactory;
 import restaurant.Federate;
 import restaurant.Settings;
 import restaurant.customer.Customer;
-import restaurant.customer.CustomerFederate;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Random;
+import java.util.*;
 
 public class QueueFederate extends Federate {
 
     QueueAmbassador fedamb;
     private final double timeStep           = 10.0;
-
-
+    private final int avalibleTablesInRestaurant = 50;
+    private List<Customer> customersInRestaurant = new ArrayList<>();
 
     public void runFederate(String federateName) throws Exception {
 
@@ -84,9 +83,27 @@ public class QueueFederate extends Federate {
 
             double interactionTimeStep = timeToAdvance + fedamb.federateLookahead;
 
-            for (int i = 0; i < rnd.nextInt(Settings.MAX_CUSTOMERS_PER_CYCLE+1); i++) { // 0-3 customers
+            if (!fedamb.getCustomersInQueue().isEmpty()){
+                if (customersInRestaurant.size() < avalibleTablesInRestaurant) {
+                    /*Customer customer = fedamb.getFirstCustomer();
+                    int freeTableIndex = customersInRestaurant.stream()
+                            .filter((x)-> x.equals(false))
+                            .collect(Collectors.toList())
+                            .indexOf(false);
+                    customersInRestaurant.add(freeTableIndex, true);
+                    fedamb.removeCustomerFromQueue(customer);
+                    log("\nCustomer: " + customer.getCustomerNumber() + " entering to the restaurant");
+                    //interakcja mozna zajac stolik*/
 
-                log("Some task" + i);
+                    customersInRestaurant.add(fedamb.getFirstCustomer());
+                    sendPossibleTakeTableInteraction(customersInRestaurant.size());
+                }
+                else{
+                    log("\nNo free seats in restaurant!");
+                }
+            }
+            else{
+                log("\nNo Customers in queue");
             }
             /* TODO: new interactions to handle
             if(fedamb.externalEvents.size() > 0) { // new interactions to handle
@@ -102,6 +119,22 @@ public class QueueFederate extends Federate {
         }
     }
 
+
+    private void sendPossibleTakeTableInteraction(int freeTableNumber) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+        ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
+
+        HLAinteger32BE tableNumberValue = encoderFactory.createHLAinteger32BE(freeTableNumber);
+
+        InteractionClassHandle interactionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.possibleTakeTable");
+
+        ParameterHandle tableNumberHandle = rtiamb.getParameterHandle( interactionHandle,"tableNumber" );
+
+        parameters.put(tableNumberHandle, tableNumberValue.toByteArray());
+
+        log("Sending, take table with id: " + freeTableNumber);
+        HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
+        rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
+    }
 
 
 

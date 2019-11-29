@@ -65,4 +65,16 @@ public class QueueAmbassador extends Ambassador {
             log(builder.toString());
         }
     }
+
+    public List<Customer> getCustomersInQueue() {
+        return customersInQueue;
+    }
+
+    public boolean removeCustomerFromQueue(Customer customer) {
+        return customersInQueue.remove(customer);
+    }
+
+    public Customer getFirstCustomer(){
+        return customersInQueue.stream().findFirst().orElseThrow(() -> new NullPointerException("No customers in queue!!"));
+    }
 }
