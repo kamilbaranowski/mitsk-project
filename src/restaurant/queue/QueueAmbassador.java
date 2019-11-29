@@ -3,11 +3,16 @@ package restaurant.queue;
 import hla.rti1516e.*;
 import hla.rti1516e.exceptions.*;
 import restaurant.Ambassador;
+import restaurant.customer.Customer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QueueAmbassador extends Ambassador {
 
     public QueueFederate federate;
-
+    private final int customerQueueSize = 40;
+    private List<Customer> customersInQueue = new ArrayList<>();
 
 
     protected InteractionClassHandle possibleTakeTableHandle;
@@ -49,7 +54,14 @@ public class QueueAmbassador extends Ambassador {
         }
 
         if (interactionClass.equals(enterQueueHandle)){
-            String enterQueue = decodeServiceStand(theParameters.get(customerNumberHandle));
+            int customerNumber = decodeInt(theParameters.get(customerNumberHandle));
+            if (customersInQueue.size() < customerQueueSize) {
+                customersInQueue.add(new Customer(customerNumber));
+                builder.append("\nCustomer with id: " + customerNumber + " entering the queue.");
+            }
+            else{
+                builder.append("\nQueue is full, customer with id: " + customerNumber + " leaving.");
+            }
             log(builder.toString());
         }
     }
