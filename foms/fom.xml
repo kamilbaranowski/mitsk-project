@@ -72,13 +72,13 @@
                             <dataType>HLAinteger32BE</dataType>
                             <semantics>liczba zwolnionych miejsc przy stoliku</semantics>
                         </parameter>
-                        <!-- ????
+
                         <parameter>
                             <name>tableNumber</name>
                             <dataType>HLAinteger32BE</dataType>
                             <semantics>identyfikator stolika</semantics>
                         </parameter>
-                        -->
+
                     </interactionClass>
                 </interactionClass>
             </interactionClass>

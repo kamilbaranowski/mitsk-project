@@ -5,10 +5,15 @@ import hla.rti1516e.CallbackModel;
 import hla.rti1516e.InteractionClassHandle;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.exceptions.*;
+import hla.rti1516e.time.HLAfloat64TimeFactory;
 import restaurant.Federate;
+import restaurant.Settings;
+import restaurant.customer.CustomerAmbassador;
+import restaurant.queue.QueueFederate;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 public class OrderFederate extends Federate{
 
@@ -26,31 +31,68 @@ public class OrderFederate extends Federate{
         return order;
     }
 
-    @Override
-    public void runFederate(String federateName) throws Exception {
-        log("Cretaing RTIAmbassador");
+    public void runFederate( String federateName )  throws Exception {
+        log( "Creating RTIambassador" );
         rtiamb = RtiFactoryFactory.getRtiFactory().getRtiAmbassador();
         encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
 
-        log("Connecting ... ");
+        log( "Connecting..." );
         fedamb = new OrderAmbassador(this);
-        rtiamb.connect(fedamb, CallbackModel.HLA_EVOKED);
+        rtiamb.connect( fedamb, CallbackModel.HLA_EVOKED );
 
         try
         {
-            File fom = new File( "foms/fom.fed" );
-            rtiamb.createFederationExecution( "ExampleFederation",
-                    fom.toURI().toURL() );
+            URL[] modules = new URL[]{
+                    (new File("foms/fom.xml")).toURI().toURL(),
+
+            };
+
+
+            rtiamb.createFederationExecution( "ExampleFederation", modules );
             log( "Created Federation" );
-        } catch( MalformedURLException urle )
+        }
+        catch( hla.rti1516e.exceptions.FederationExecutionAlreadyExists exists )
         {
-            log( "Exception processing fom: " + urle.getMessage() );
+            log( "Didn't create federation, it already existed" );
+        }
+        catch( MalformedURLException urle )
+        {
+            log( "Exception loading one of the FOM modules from disk: " + urle.getMessage() );
             urle.printStackTrace();
             return;
         }
 
-        rtiamb.joinFederationExecution( federateName,"CarFederateType" ,"ExampleFederation" );
+        //        URL[] joinModules = new URL[]{};
+//        rtiamb.joinFederationExecution( federateName,"CarFederateType" ,"ExampleFederation", joinModules );
+        rtiamb.joinFederationExecution( federateName,"CustomerFederateType" ,"ExampleFederation" );
 
+        log( "Joined Federation as " + federateName );
+
+        this.timeFactory = (HLAfloat64TimeFactory)rtiamb.getTimeFactory();
+
+        rtiamb.registerFederationSynchronizationPoint( READY_TO_RUN, null );
+        // wait until the point is announced
+        while(!fedamb.isAnnounced){
+            rtiamb.evokeMultipleCallbacks( 0.1, 0.2 );
+        }
+        //user should press enter
+        waitForUser();
+
+        rtiamb.synchronizationPointAchieved( READY_TO_RUN );
+        log( "Achieved sync point: " +READY_TO_RUN+ ", waiting for federation..." );
+
+        while(!fedamb.isReadyToRun)	{
+            rtiamb.evokeMultipleCallbacks( 0.1, 0.2 );
+        }
+
+        enableTimePolicy(fedamb);
+        log( "Time Policy Enabled" );
+        publishAndSubscribe();
+        log( "Published and Subscribed" );
+
+        while (fedamb.running) {
+            if (fedamb.federateTime > Settings.endSimulationTime) fedamb.running=false;
+        }
 
 
     }
@@ -75,5 +117,23 @@ public class OrderFederate extends Federate{
 
 
 
+    }
+
+    //----------------------------------------------------------
+    //                     STATIC METHODS
+    //----------------------------------------------------------
+    public static void main( String[] args ){
+        // get a federate name, use "exampleFederate" as default
+        String federateName = "orderFederate";
+        if( args.length != 0 ){
+            federateName = args[0];
+        }
+
+        try{// run the example federate
+            new OrderFederate().runFederate( federateName );
+        }
+        catch(Exception rtie ){
+            rtie.printStackTrace();
+        }
     }
 }

@@ -1,11 +1,12 @@
 package restaurant.customer;
 
-import hla.rti1516e.CallbackModel;
-import hla.rti1516e.InteractionClassHandle;
-import hla.rti1516e.ResignAction;
-import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.*;
+import hla.rti1516e.encoding.HLAASCIIstring;
+import hla.rti1516e.encoding.HLAinteger32BE;
 import hla.rti1516e.exceptions.*;
+import hla.rti1516e.time.HLAfloat64Time;
 import hla.rti1516e.time.HLAfloat64TimeFactory;
+import restaurant.ExternalEvent;
 import restaurant.Federate;
 import restaurant.Settings;
 
@@ -15,10 +16,12 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class CustomerFederate extends Federate {
 
+    private int customerIterator = 0;
     private final double timeStep           = 10.0;
     private CustomerAmbassador fedamb;
     private ArrayList<Customer> customersQueue = new ArrayList<>();
@@ -73,6 +76,23 @@ public class CustomerFederate extends Federate {
         rtiamb.subscribeInteractionClass(endServiceInteractionHandle);
         rtiamb.subscribeInteractionClass(paymentInteractionHandle);
     }
+
+    public void sendEnterQueueInteraction(int customerNumber) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+        ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
+
+        HLAinteger32BE customerNumberValue = encoderFactory.createHLAinteger32BE(customerNumber);
+
+        InteractionClassHandle interactionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.enterQueue");
+
+        ParameterHandle customerNumberHandle = rtiamb.getParameterHandle( interactionHandle,"customerNumber" );
+
+        parameters.put(customerNumberHandle, customerNumberValue.toByteArray());
+
+        log("Sending, enter to queue customer with id: " + customerNumber);
+        HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
+        rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
+    }
+
 
     public void runFederate( String federateName )  throws Exception {
         log( "Creating RTIambassador" );
@@ -146,7 +166,20 @@ public class CustomerFederate extends Federate {
 
             for (int i = 0; i < rnd.nextInt(Settings.MAX_CUSTOMERS_PER_CYCLE+1); i++) { // 0-3 customers
 
+                customersQueue.add(new Customer(++customerIterator));
+                sendEnterQueueInteraction(customerIterator);
             }
+            /* TODO: new interactions to handle
+            if(fedamb.externalEvents.size() > 0) { // new interactions to handle
+                fedamb.externalEvents.sort(new ExternalEvent.ExternalEventComparator());
+                for (ExternalEvent externalEvent : fedamb.externalEvents) {
+                    switch (externalEvent.getEventType()) {
+                        case START:
+                            inServiceList.add(getCarFromQueue(externalEvent.getCarNumber()));
+                            break;
+                    }
+                }
+            }*/
         }
 
 }
