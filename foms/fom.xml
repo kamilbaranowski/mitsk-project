@@ -202,6 +202,11 @@
                     <dataType>HLAinteger32BE</dataType>
                     <semantics>identyfikatory wolnych stolikow</semantics>
                 </parameter>
+                <parameter>
+                    <name>customerNumber</name>
+                    <dataType>HLAinteger32BE</dataType>
+                    <semantics>identyfikator klienta</semantics>
+                </parameter>
             </interactionClass>
 
         </interactionClass>
