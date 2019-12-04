@@ -2,7 +2,7 @@ package restaurant.table;
 
 public class Table {
     private int tableNumber;
-    private boolean isFree;
+    private boolean isFree = true;
 
     public Table(int tableNumber){
         this.tableNumber = tableNumber;
@@ -24,9 +24,9 @@ public class Table {
         isFree = free;
     }
 
-    public void changeIsFree() {
-        if(isFree == true) isFree = false;
-        else isFree = true;
+    public boolean changeIsFree() {
+        isFree = !isFree;
+        return isFree;
     }
 
 }

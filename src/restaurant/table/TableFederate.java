@@ -129,13 +129,6 @@ public class TableFederate extends Federate {
 
             double interactionTimeStep = timeToAdvance + fedamb.federateLookahead;
 
-            List<Table> tables = new ArrayList<>();
-            for(int i = 0; i < Settings.MAX_TABLE; i++) {
-                tables.add(new Table(i+1));
-                log("Create table number: " +  (i + 1));
-            }
-
-
         }
     }
 
