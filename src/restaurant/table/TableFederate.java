@@ -53,6 +53,24 @@ public class TableFederate extends Federate {
 
     }
 
+    public void sendTableFreeInteaction(int tableNumber) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+        ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
+
+        HLAinteger32BE tableNumberValue = encoderFactory.createHLAinteger32BE(tableNumber);
+
+
+        InteractionClassHandle interactionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.tableFree");
+
+        ParameterHandle tableNumberHandle = rtiamb.getParameterHandle( interactionHandle,"tableNumber" );
+
+        parameters.put(tableNumberHandle, tableNumberValue.toByteArray());
+
+
+        log("Sending, table free, with table id: " + tableNumber);
+        HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
+        rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
+    }
+
     public void sendTableOccupiedInteraction(int tableNumber) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
         ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
         HLAinteger32BE tableNumberValue = encoderFactory.createHLAinteger32BE(tableNumber);
