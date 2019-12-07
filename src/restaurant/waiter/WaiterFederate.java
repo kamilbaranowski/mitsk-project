@@ -1,7 +1,11 @@
 package restaurant.waiter;
 
 import hla.rti1516e.InteractionClassHandle;
+import hla.rti1516e.ParameterHandle;
+import hla.rti1516e.ParameterHandleValueMap;
+import hla.rti1516e.encoding.HLAinteger32BE;
 import hla.rti1516e.exceptions.*;
+import hla.rti1516e.time.HLAfloat64Time;
 import restaurant.Federate;
 
 public class WaiterFederate extends Federate {
@@ -41,5 +45,23 @@ public class WaiterFederate extends Federate {
         rtiamb.subscribeInteractionClass(placeOrderInteractionHandle);
         rtiamb.subscribeInteractionClass(orderExecutionInteractionHandle);
 
+    }
+
+    public void sendStartServiceInteraction(int tableNumber) throws NameNotFound, NotConnected, RTIinternalError, FederateNotExecutionMember, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+        ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
+        //nrStolika tableNumber
+        HLAinteger32BE tableNumberValue = encoderFactory.createHLAinteger32BE(tableNumber);
+
+
+        InteractionClassHandle interactionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.startService");
+
+        ParameterHandle tableNumberHandle = rtiamb.getParameterHandle( interactionHandle,"tableNumber" );
+
+        parameters.put(tableNumberHandle, tableNumberValue.toByteArray());
+
+
+        log("Sending, start service with table id: " + tableNumber);
+        HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
+        rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
     }
 }
