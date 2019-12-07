@@ -74,6 +74,25 @@ public class CustomerAmbassador extends Ambassador {
             builder.append("\nCustomer: "+ customerNumber+" taking table with id: " + tableNumber);
             log(builder.toString());
         }
+        else if (interactionClass.equals(startServiceHandle)){
+            ParameterHandle tableNumberHandle = null;
+
+            try {
+                tableNumberHandle = federate.rtiamb.getParameterHandle(interactionClass, "tableNumber");
+                log("Customer receive: start service interaction from Waiter");
+
+            } catch (NameNotFound nameNotFound) {
+                nameNotFound.printStackTrace();
+            } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
+                invalidInteractionClassHandle.printStackTrace();
+            } catch (FederateNotExecutionMember federateNotExecutionMember) {
+                federateNotExecutionMember.printStackTrace();
+            } catch (NotConnected notConnected) {
+                notConnected.printStackTrace();
+            } catch (RTIinternalError rtIinternalError) {
+                rtIinternalError.printStackTrace();
+            }
+        }
     }
 
     public Map<Table, Customer> getCustomerMap() {
