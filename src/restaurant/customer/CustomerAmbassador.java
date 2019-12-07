@@ -93,6 +93,25 @@ public class CustomerAmbassador extends Ambassador {
                 rtIinternalError.printStackTrace();
             }
         }
+        else if (interactionClass.equals(endServiceHandle)){
+            ParameterHandle tableNumberHandle = null;
+
+            try {
+                tableNumberHandle = federate.rtiamb.getParameterHandle(interactionClass, "tableNumber");
+                log("Customer receive: end service interaction from Waiter");
+                //TODO: trzeba zaimplementowac jakas obsluge tej interakcji oraz interakcji start service
+            } catch (NameNotFound nameNotFound) {
+                nameNotFound.printStackTrace();
+            } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
+                invalidInteractionClassHandle.printStackTrace();
+            } catch (FederateNotExecutionMember federateNotExecutionMember) {
+                federateNotExecutionMember.printStackTrace();
+            } catch (NotConnected notConnected) {
+                notConnected.printStackTrace();
+            } catch (RTIinternalError rtIinternalError) {
+                rtIinternalError.printStackTrace();
+            }
+        }
     }
 
     public Map<Table, Customer> getCustomerMap() {
