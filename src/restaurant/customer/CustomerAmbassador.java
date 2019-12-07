@@ -112,6 +112,30 @@ public class CustomerAmbassador extends Ambassador {
                 rtIinternalError.printStackTrace();
             }
         }
+        else if (interactionClass.equals(paymentHandle)){
+            ParameterHandle amountHandle = null;
+            ParameterHandle typeHandle = null;
+
+            try {
+                amountHandle = federate.rtiamb.getParameterHandle(interactionClass, "amount");
+                typeHandle = federate.rtiamb.getParameterHandle(interactionClass, "type");
+
+                int amount = decodeInt(theParameters.get(amountHandle));
+                String type = decodeServiceStand(theParameters.get(typeHandle));
+                log("Customer receive payment: amount = " + amount + " type = " + type);
+                //TODO: trzeba zaimplementowac obsluge tej interakcji, powinna być odebrana równoczescie z zakonczeniem obslugi???
+            } catch (NameNotFound nameNotFound) {
+                nameNotFound.printStackTrace();
+            } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
+                invalidInteractionClassHandle.printStackTrace();
+            } catch (FederateNotExecutionMember federateNotExecutionMember) {
+                federateNotExecutionMember.printStackTrace();
+            } catch (NotConnected notConnected) {
+                notConnected.printStackTrace();
+            } catch (RTIinternalError rtIinternalError) {
+                rtIinternalError.printStackTrace();
+            }
+        }
     }
 
     public Map<Table, Customer> getCustomerMap() {
