@@ -94,6 +94,24 @@ public class CustomerFederate extends Federate {
         rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
     }
 
+    public void sendLeavingTableInteraction(int seats) throws NameNotFound, NotConnected, RTIinternalError, FederateNotExecutionMember, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+        ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
+
+
+        //TODO: dla uproszczenia nie bedzie wysylana lista tylko jeden losowy element z listy - nalezy go przekazac poprzez paramter dish. To samo dla maxRealizationTime
+        HLAinteger32BE seatsValue = encoderFactory.createHLAinteger32BE(seats);
+
+        InteractionClassHandle interactionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.leavingTable");
+
+        ParameterHandle seatsHandle = rtiamb.getParameterHandle( interactionHandle,"freedSeats" );
+
+        parameters.put(seatsHandle, seatsValue.toByteArray());
+
+        log("Sending, leaving table interaction: Freed seats: " + seats);
+        HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
+        rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
+    }
+
     public void sendPlaceOrderInteraction(String dish, int maxRealizationTime) throws NameNotFound, NotConnected, RTIinternalError, FederateNotExecutionMember, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
         ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
 
