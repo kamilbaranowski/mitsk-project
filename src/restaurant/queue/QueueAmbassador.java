@@ -64,6 +64,28 @@ public class QueueAmbassador extends Ambassador {
             }
             log(builder.toString());
         }
+        else if (interactionClass.equals(tableFreeHandle)){
+            ParameterHandle tableNumberHandle = null;
+
+
+            try {
+                tableNumberHandle = federate.rtiamb.getParameterHandle(interactionClass, "tableNumber");
+                int tableNumber = decodeInt(theParameters.get(tableNumberHandle));
+                log("Queue receive table free interaction, with table id: " +tableNumber);
+                //TODO: obsluga zwolnienia stolika, tutaj wlasciwie koniec cyklu symulacji
+            } catch (NameNotFound nameNotFound) {
+                nameNotFound.printStackTrace();
+            } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
+                invalidInteractionClassHandle.printStackTrace();
+            } catch (FederateNotExecutionMember federateNotExecutionMember) {
+                federateNotExecutionMember.printStackTrace();
+            } catch (NotConnected notConnected) {
+                notConnected.printStackTrace();
+            } catch (RTIinternalError rtIinternalError) {
+                rtIinternalError.printStackTrace();
+            }
+
+        }
     }
 
     public List<Customer> getCustomersInQueue() {
