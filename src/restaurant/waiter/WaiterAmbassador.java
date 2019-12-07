@@ -80,6 +80,27 @@ public class WaiterAmbassador extends Ambassador {
             }
 
         }
+        else if (interactionClass.equals(orderExecutionHandle)){
+            ParameterHandle statusHandle = null;
+
+            try {
+                statusHandle = federate.rtiamb.getParameterHandle(interactionClass, "status");
+
+                String status = decodeServiceStand(theParameters.get(statusHandle));
+                log("Waiter receive order execution with status: " + status);
+            } catch (NameNotFound nameNotFound) {
+                nameNotFound.printStackTrace();
+            } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
+                invalidInteractionClassHandle.printStackTrace();
+            } catch (FederateNotExecutionMember federateNotExecutionMember) {
+                federateNotExecutionMember.printStackTrace();
+            } catch (NotConnected notConnected) {
+                notConnected.printStackTrace();
+            } catch (RTIinternalError rtIinternalError) {
+                rtIinternalError.printStackTrace();
+            }
+
+        }
 
     }
 }
