@@ -56,6 +56,30 @@ public class WaiterAmbassador extends Ambassador {
             }
 
         }
+        else if (interactionClass.equals(placeOrderHandle)){
+            ParameterHandle maxRealizationTimeHandle = null;
+            ParameterHandle dishHandle = null;
+
+            try {
+                maxRealizationTimeHandle = federate.rtiamb.getParameterHandle(interactionClass, "maxRealizationTime");
+                dishHandle = federate.rtiamb.getParameterHandle(interactionClass, "dish");
+                String dish = decodeServiceStand(theParameters.get(dishHandle));
+                int maxRealizationTime = decodeInt(theParameters.get(maxRealizationTimeHandle));
+                log("Waiter receive order: Dish: " + dish + " with order realization time: " + maxRealizationTime);
+                //TODO: zapisac otrzymane zamowienie
+            } catch (NameNotFound nameNotFound) {
+                nameNotFound.printStackTrace();
+            } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
+                invalidInteractionClassHandle.printStackTrace();
+            } catch (FederateNotExecutionMember federateNotExecutionMember) {
+                federateNotExecutionMember.printStackTrace();
+            } catch (NotConnected notConnected) {
+                notConnected.printStackTrace();
+            } catch (RTIinternalError rtIinternalError) {
+                rtIinternalError.printStackTrace();
+            }
+
+        }
 
     }
 }
