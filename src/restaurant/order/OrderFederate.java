@@ -1,10 +1,11 @@
 package restaurant.order;
 
 import hla.rti.FederationExecutionAlreadyExists;
-import hla.rti1516e.CallbackModel;
-import hla.rti1516e.InteractionClassHandle;
-import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.*;
+import hla.rti1516e.encoding.HLAASCIIstring;
+import hla.rti1516e.encoding.HLAinteger32BE;
 import hla.rti1516e.exceptions.*;
+import hla.rti1516e.time.HLAfloat64Time;
 import hla.rti1516e.time.HLAfloat64TimeFactory;
 import restaurant.Federate;
 import restaurant.Settings;
@@ -30,6 +31,23 @@ public class OrderFederate extends Federate{
         Order order = null;
         return order;
     }
+
+    public void sendOrderExecutionInteraction(String status) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+        ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
+
+
+        HLAASCIIstring statusValue = encoderFactory.createHLAASCIIstring(status);
+        InteractionClassHandle interactionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.orderExecution");
+
+        ParameterHandle statusHandle = rtiamb.getParameterHandle( interactionHandle,"status" );
+
+        parameters.put(statusHandle, statusValue.toByteArray());
+
+        log("Sending, order execution interaction, with status: " + status) ;
+        HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
+        rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
+    }
+
 
     public void runFederate( String federateName )  throws Exception {
         log( "Creating RTIambassador" );
