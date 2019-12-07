@@ -35,7 +35,7 @@ public class OrderAmbassador extends Ambassador {
                 dishHandle = federate.rtiamb.getParameterHandle(interactionClass, "dish");
                 String dish = decodeServiceStand(theParameters.get(dishHandle));
                 int maxRealizationTime = decodeInt(theParameters.get(maxRealizationTimeHandle));
-                log("Waiter receive order: Dish: " + dish + " with order realization time: " + maxRealizationTime);
+                log("OrderAmbassador receive order: Dish: " + dish + " with order realization time: " + maxRealizationTime);
                 //TODO: zapisac otrzymane zamowienie
             } catch (NameNotFound nameNotFound) {
                 nameNotFound.printStackTrace();
