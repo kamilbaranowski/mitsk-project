@@ -88,6 +88,7 @@ public class WaiterAmbassador extends Ambassador {
 
                 String status = decodeServiceStand(theParameters.get(statusHandle));
                 log("Waiter receive order execution with status: " + status);
+                //TODO: musi czekac na koniec obslugi - trzeba pewnie zaimplementowac jakas funkcjie wait ale w federacie
             } catch (NameNotFound nameNotFound) {
                 nameNotFound.printStackTrace();
             } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
