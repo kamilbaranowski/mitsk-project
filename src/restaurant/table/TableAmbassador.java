@@ -90,6 +90,28 @@ public class TableAmbassador extends Ambassador {
                     }
                     log("isFree change for table number: " + tableNumber + " to true ");
                 }
+                if (interactionClass.equals(leavingTableHandle)){
+                    ParameterHandle seatsHandle = null;
+
+                    try {
+                        seatsHandle = federate.rtiamb.getParameterHandle(interactionClass, "freedSeats");
+
+                        int seats = decodeInt(theParameters.get(seatsHandle));
+                        log("TableAmbassador receive leaving table: Freed seats: " + seats);
+                        //TODO: zwolnic miejsca na liscie dostepnych
+                    } catch (NameNotFound nameNotFound) {
+                        nameNotFound.printStackTrace();
+                    } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
+                        invalidInteractionClassHandle.printStackTrace();
+                    } catch (FederateNotExecutionMember federateNotExecutionMember) {
+                        federateNotExecutionMember.printStackTrace();
+                    } catch (NotConnected notConnected) {
+                        notConnected.printStackTrace();
+                    } catch (RTIinternalError rtIinternalError) {
+                        rtIinternalError.printStackTrace();
+                    }
+
+                }
             }
         }
     }
