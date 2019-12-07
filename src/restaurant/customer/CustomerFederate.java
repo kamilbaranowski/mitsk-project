@@ -3,6 +3,7 @@ package restaurant.customer;
 import hla.rti1516e.*;
 import hla.rti1516e.encoding.HLAASCIIstring;
 import hla.rti1516e.encoding.HLAinteger32BE;
+import hla.rti1516e.encoding.HLAvariableArray;
 import hla.rti1516e.exceptions.*;
 import hla.rti1516e.time.HLAfloat64Time;
 import hla.rti1516e.time.HLAfloat64TimeFactory;
@@ -89,6 +90,26 @@ public class CustomerFederate extends Federate {
         parameters.put(customerNumberHandle, customerNumberValue.toByteArray());
 
         log("Sending, enter to queue customer with id: " + customerNumber);
+        HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
+        rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
+    }
+
+    public void sendPlaceOrderInteraction(String dish, int maxRealizationTime) throws NameNotFound, NotConnected, RTIinternalError, FederateNotExecutionMember, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+        ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
+
+
+        //TODO: dla uproszczenia nie bedzie wysylana lista tylko jeden losowy element z listy - nalezy go przekazac poprzez paramter dish. To samo dla maxRealizationTime
+        HLAinteger32BE maxRealizationTimeValue = encoderFactory.createHLAinteger32BE(maxRealizationTime);
+        HLAASCIIstring dishValue = encoderFactory.createHLAASCIIstring(dish);
+        InteractionClassHandle interactionHandle = rtiamb.getInteractionClassHandle("HLAinteractionRoot.placeOrder");
+
+        ParameterHandle maxRealizationTimeHandle = rtiamb.getParameterHandle( interactionHandle,"maxRealizationTime" );
+        ParameterHandle dishHandle = rtiamb.getParameterHandle( interactionHandle,"dish" );
+
+        parameters.put(maxRealizationTimeHandle, maxRealizationTimeValue.toByteArray());
+        parameters.put(dishHandle, dishValue.toByteArray());
+
+        log("Sending, place order interaction: " + dish + " With realization time: " + maxRealizationTime);
         HLAfloat64Time time = timeFactory.makeTime( fedamb.federateTime+fedamb.federateLookahead );
         rtiamb.sendInteraction( interactionHandle, parameters, generateTag(), time );
     }
