@@ -113,8 +113,8 @@
                 <order>TimeStamp</order>
                 <semantics>zlozenie zamowienia</semantics>
                 <parameter>
-                    <name>dishList</name>
-                    <dataType>HLAvariableArray</dataType>
+                    <name>dish</name>
+                    <dataType>HLAASCIIstring</dataType>
                     <semantics>lista zamowionych posilkow</semantics>
                 </parameter>
                 <parameter>
