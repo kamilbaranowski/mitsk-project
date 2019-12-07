@@ -21,7 +21,7 @@ import java.util.Random;
 public class TableFederate extends Federate {
 
     private TableAmbassador fedamb;
-
+    private final double timeStep           = 10.0;
     public void log(String message) {
         System.out.println("TableFederate: " + message);
     }
@@ -124,7 +124,7 @@ public class TableFederate extends Federate {
             log("Into fedamb.running");
             if (fedamb.federateTime > Settings.endSimulationTime) fedamb.running=false;
 
-            double timeToAdvance = fedamb.federateTime + Settings.TIME_STEP;
+            double timeToAdvance = fedamb.federateTime + timeStep;
             advanceTime( timeToAdvance ,fedamb);
 
             double interactionTimeStep = timeToAdvance + fedamb.federateLookahead;
