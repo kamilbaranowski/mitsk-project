@@ -95,10 +95,18 @@ public class TableAmbassador extends Ambassador {
 
                     try {
                         seatsHandle = federate.rtiamb.getParameterHandle(interactionClass, "freedSeats");
-
                         int seats = decodeInt(theParameters.get(seatsHandle));
                         log("TableAmbassador receive leaving table: Freed seats: " + seats);
                         //TODO: zwolnic miejsca na liscie dostepnych
+                        //Done
+                        ParameterHandle tableNumberToFreeHandle = federate.rtiamb.getParameterHandle(interactionClass, "tableNumber");
+                        int tableNumberToFree = decodeInt(theParameters.get(tableNumberToFreeHandle));
+                        for(Table table : tableList ) {
+                            if(table.getTableNumber() == tableNumberToFree) {
+                                table.setFree(true);
+                                federate.sendTableFreeInteraction(table.getTableNumber());
+                            }
+                        }
                     } catch (NameNotFound nameNotFound) {
                         nameNotFound.printStackTrace();
                     } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
@@ -109,6 +117,18 @@ public class TableAmbassador extends Ambassador {
                         notConnected.printStackTrace();
                     } catch (RTIinternalError rtIinternalError) {
                         rtIinternalError.printStackTrace();
+                    } catch (SaveInProgress saveInProgress) {
+                        saveInProgress.printStackTrace();
+                    } catch (RestoreInProgress restoreInProgress) {
+                        restoreInProgress.printStackTrace();
+                    } catch (InvalidLogicalTime invalidLogicalTime) {
+                        invalidLogicalTime.printStackTrace();
+                    } catch (InteractionParameterNotDefined interactionParameterNotDefined) {
+                        interactionParameterNotDefined.printStackTrace();
+                    } catch (InteractionClassNotPublished interactionClassNotPublished) {
+                        interactionClassNotPublished.printStackTrace();
+                    } catch (InteractionClassNotDefined interactionClassNotDefined) {
+                        interactionClassNotDefined.printStackTrace();
                     }
 
                 }
