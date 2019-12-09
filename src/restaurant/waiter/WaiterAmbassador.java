@@ -9,6 +9,7 @@ import restaurant.order.Order;
 import restaurant.table.Table;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class WaiterAmbassador extends Ambassador {
 
@@ -26,6 +27,7 @@ public class WaiterAmbassador extends Ambassador {
 
     private ArrayList<Order> orderList = new ArrayList<>();
     private ArrayList<Table> tableList = new ArrayList<>();
+    private int  tableNumberForWaiter;
 
     public WaiterAmbassador(WaiterFederate federate){
         this.federate = federate;
@@ -56,6 +58,7 @@ public class WaiterAmbassador extends Ambassador {
                 1. obsługa po numerze stolika - dodanie do listy stolika, który bedzie obslugiwany przez danego kelnera
                  */
                 tableList.add(new Table(tableNumber));
+                tableNumberForWaiter = tableNumber;
                 federate.sendStartServiceInteraction(tableNumber);
 
             } catch (NameNotFound nameNotFound) {
@@ -86,7 +89,7 @@ public class WaiterAmbassador extends Ambassador {
         else if (interactionClass.equals(placeOrderHandle)){
             ParameterHandle maxRealizationTimeHandle = null;
             ParameterHandle dishHandle = null;
-
+            Random random = new Random();
             try {
                 maxRealizationTimeHandle = federate.rtiamb.getParameterHandle(interactionClass, "maxRealizationTime");
                 dishHandle = federate.rtiamb.getParameterHandle(interactionClass, "dish");
@@ -98,9 +101,7 @@ public class WaiterAmbassador extends Ambassador {
                 1. Dodany do zamównia nr stolika dla, którego jest przygotowywane
                 2. Stworzona lista zamówień dla kelnera
                  */
-                //Order order = new Order();
-
-
+                Order order = new Order(random.nextInt(), Order.orderType.valueOf(dish), maxRealizationTime, tableNumberForWaiter);
 
             } catch (NameNotFound nameNotFound) {
                 nameNotFound.printStackTrace();
@@ -124,6 +125,9 @@ public class WaiterAmbassador extends Ambassador {
                 String status = decodeServiceStand(theParameters.get(statusHandle));
                 log("Waiter receive order execution with status: " + status);
                 //TODO: musi czekac na koniec obslugi - trzeba pewnie zaimplementowac jakas funkcjie wait ale w federacie
+                federate.wait(10000);
+                federate.sendEndServiceInteraction(tableNumberForWaiter);
+
             } catch (NameNotFound nameNotFound) {
                 nameNotFound.printStackTrace();
             } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
@@ -134,6 +138,20 @@ public class WaiterAmbassador extends Ambassador {
                 notConnected.printStackTrace();
             } catch (RTIinternalError rtIinternalError) {
                 rtIinternalError.printStackTrace();
+            } catch (SaveInProgress saveInProgress) {
+                saveInProgress.printStackTrace();
+            } catch (InteractionClassNotDefined interactionClassNotDefined) {
+                interactionClassNotDefined.printStackTrace();
+            } catch (RestoreInProgress restoreInProgress) {
+                restoreInProgress.printStackTrace();
+            } catch (InvalidLogicalTime invalidLogicalTime) {
+                invalidLogicalTime.printStackTrace();
+            } catch (InteractionClassNotPublished interactionClassNotPublished) {
+                interactionClassNotPublished.printStackTrace();
+            } catch (InteractionParameterNotDefined interactionParameterNotDefined) {
+                interactionParameterNotDefined.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
         }

@@ -17,7 +17,6 @@ public class QueueAmbassador extends Ambassador {
 
     protected InteractionClassHandle possibleTakeTableHandle;
 
-
     protected InteractionClassHandle enterQueueHandle;
     protected InteractionClassHandle impatientHandle;
     protected InteractionClassHandle tableOccupiedHandle;
@@ -73,6 +72,7 @@ public class QueueAmbassador extends Ambassador {
                 int tableNumber = decodeInt(theParameters.get(tableNumberHandle));
                 log("Queue receive table free interaction, with table id: " +tableNumber);
                 //TODO: obsluga zwolnienia stolika, tutaj wlasciwie koniec cyklu symulacji
+                federate.sendPossibleTakeTableInteraction(tableNumber, 0);
             } catch (NameNotFound nameNotFound) {
                 nameNotFound.printStackTrace();
             } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
@@ -83,6 +83,18 @@ public class QueueAmbassador extends Ambassador {
                 notConnected.printStackTrace();
             } catch (RTIinternalError rtIinternalError) {
                 rtIinternalError.printStackTrace();
+            } catch (SaveInProgress saveInProgress) {
+                saveInProgress.printStackTrace();
+            } catch (RestoreInProgress restoreInProgress) {
+                restoreInProgress.printStackTrace();
+            } catch (InvalidLogicalTime invalidLogicalTime) {
+                invalidLogicalTime.printStackTrace();
+            } catch (InteractionParameterNotDefined interactionParameterNotDefined) {
+                interactionParameterNotDefined.printStackTrace();
+            } catch (InteractionClassNotPublished interactionClassNotPublished) {
+                interactionClassNotPublished.printStackTrace();
+            } catch (InteractionClassNotDefined interactionClassNotDefined) {
+                interactionClassNotDefined.printStackTrace();
             }
 
         }

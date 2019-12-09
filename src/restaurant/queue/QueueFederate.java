@@ -106,6 +106,7 @@ public class QueueFederate extends Federate {
                 log("\nNo Customers in queue");
             }
             /* TODO: new interactions to handle
+
             if(fedamb.externalEvents.size() > 0) { // new interactions to handle
                 fedamb.externalEvents.sort(new ExternalEvent.ExternalEventComparator());
                 for (ExternalEvent externalEvent : fedamb.externalEvents) {
@@ -116,11 +117,13 @@ public class QueueFederate extends Federate {
                     }
                 }
             }*/
+
+
         }
     }
 
 
-    private void sendPossibleTakeTableInteraction(int freeTableNumber, int customerNumber) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
+    public void sendPossibleTakeTableInteraction(int freeTableNumber, int customerNumber) throws NotConnected, FederateNotExecutionMember, NameNotFound, RTIinternalError, InvalidInteractionClassHandle, SaveInProgress, RestoreInProgress, InteractionClassNotPublished, InteractionClassNotDefined, InvalidLogicalTime, InteractionParameterNotDefined {
         ParameterHandleValueMap parameters = rtiamb.getParameterHandleValueMapFactory().create(0);
 
         HLAinteger32BE tableNumberValue = encoderFactory.createHLAinteger32BE(freeTableNumber);

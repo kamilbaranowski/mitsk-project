@@ -12,11 +12,19 @@ public class Order {
     private int orderNumber;
     private orderType orderType;
     private double endServiceTime;
+    private int tableNumber;
 
     public Order(int orderNumber, Order.orderType orderType, double endServiceTime) {
         this.orderNumber = orderNumber;
         this.orderType = orderType;
         this.endServiceTime = endServiceTime;
+    }
+
+    public Order(int orderNumber, Order.orderType orderType, double endServiceTime, int tableNumber) {
+        this.orderNumber = orderNumber;
+        this.orderType = orderType;
+        this.endServiceTime = endServiceTime;
+        this.tableNumber = tableNumber;
     }
 
     public Order(int orderNumber, double endServiceTime) {
