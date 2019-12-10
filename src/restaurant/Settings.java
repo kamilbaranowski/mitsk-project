@@ -6,5 +6,6 @@ public class Settings {
     public static final int MAX_TABLE = 50;
     public static final double CUSTOMER_IMPATIENT_PROBABILITY =0.1 ;
     public static final int MAX_CUSTOMERS_PER_CYCLE = 4;
+    public static final double TIME_TO_WAIT_FOR_DISH = 15.0;
 
 }

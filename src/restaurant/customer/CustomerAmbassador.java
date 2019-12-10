@@ -4,12 +4,11 @@ import hla.rti1516e.*;
 import hla.rti1516e.exceptions.*;
 import restaurant.Ambassador;
 import restaurant.ExternalEvent;
+import restaurant.Settings;
+import restaurant.order.Order;
 import restaurant.table.Table;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CustomerAmbassador extends Ambassador {
 
@@ -18,6 +17,8 @@ public class CustomerAmbassador extends Ambassador {
     public CustomerFederate federate;
     //private int keyMapValue = 0;
     private Map<Table, Customer> customerMap = new LinkedHashMap<>();
+    private List<String> orderTypes = new ArrayList<>();
+
 
 
     protected InteractionClassHandle enterQueueHandle;
@@ -35,6 +36,10 @@ public class CustomerAmbassador extends Ambassador {
 
     public CustomerAmbassador(CustomerFederate federate) {
         this.federate = federate;
+        this.orderTypes.add("SOUP");
+        this.orderTypes.add("MAIN_COURSE");
+        this.orderTypes.add("DESSERT");
+        this.orderTypes.add("DRIMG");
     }
 
 
@@ -76,11 +81,13 @@ public class CustomerAmbassador extends Ambassador {
         }
         else if (interactionClass.equals(startServiceHandle)){
             ParameterHandle tableNumberHandle = null;
-
+            Random random = new Random();
             try {
                 tableNumberHandle = federate.rtiamb.getParameterHandle(interactionClass, "tableNumber");
                 log("Customer receive: start service interaction from Waiter");
-
+                log("Customer: order dish...");
+                wait(100);
+                federate.sendPlaceOrderInteraction(orderTypes.get(random.nextInt(4)), (int) (federateTime + random.nextDouble()));
             } catch (NameNotFound nameNotFound) {
                 nameNotFound.printStackTrace();
             } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
@@ -91,6 +98,20 @@ public class CustomerAmbassador extends Ambassador {
                 notConnected.printStackTrace();
             } catch (RTIinternalError rtIinternalError) {
                 rtIinternalError.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (SaveInProgress saveInProgress) {
+                saveInProgress.printStackTrace();
+            } catch (RestoreInProgress restoreInProgress) {
+                restoreInProgress.printStackTrace();
+            } catch (InvalidLogicalTime invalidLogicalTime) {
+                invalidLogicalTime.printStackTrace();
+            } catch (InteractionParameterNotDefined interactionParameterNotDefined) {
+                interactionParameterNotDefined.printStackTrace();
+            } catch (InteractionClassNotPublished interactionClassNotPublished) {
+                interactionClassNotPublished.printStackTrace();
+            } catch (InteractionClassNotDefined interactionClassNotDefined) {
+                interactionClassNotDefined.printStackTrace();
             }
         }
         else if (interactionClass.equals(endServiceHandle)){
@@ -100,6 +121,7 @@ public class CustomerAmbassador extends Ambassador {
                 tableNumberHandle = federate.rtiamb.getParameterHandle(interactionClass, "tableNumber");
                 log("Customer receive: end service interaction from Waiter");
                 //TODO: trzeba zaimplementowac jakas obsluge tej interakcji oraz interakcji start service
+                federate.sendLeavingTableInteraction(decodeInt(theParameters.get(tableNumberHandle)));
             } catch (NameNotFound nameNotFound) {
                 nameNotFound.printStackTrace();
             } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
@@ -110,6 +132,18 @@ public class CustomerAmbassador extends Ambassador {
                 notConnected.printStackTrace();
             } catch (RTIinternalError rtIinternalError) {
                 rtIinternalError.printStackTrace();
+            } catch (SaveInProgress saveInProgress) {
+                saveInProgress.printStackTrace();
+            } catch (RestoreInProgress restoreInProgress) {
+                restoreInProgress.printStackTrace();
+            } catch (InvalidLogicalTime invalidLogicalTime) {
+                invalidLogicalTime.printStackTrace();
+            } catch (InteractionParameterNotDefined interactionParameterNotDefined) {
+                interactionParameterNotDefined.printStackTrace();
+            } catch (InteractionClassNotPublished interactionClassNotPublished) {
+                interactionClassNotPublished.printStackTrace();
+            } catch (InteractionClassNotDefined interactionClassNotDefined) {
+                interactionClassNotDefined.printStackTrace();
             }
         }
         else if (interactionClass.equals(paymentHandle)){
@@ -124,6 +158,7 @@ public class CustomerAmbassador extends Ambassador {
                 String type = decodeServiceStand(theParameters.get(typeHandle));
                 log("Customer receive payment: amount = " + amount + " type = " + type);
                 //TODO: trzeba zaimplementowac obsluge tej interakcji, powinna być odebrana równoczescie z zakonczeniem obslugi???
+                log("Custormer pay");
             } catch (NameNotFound nameNotFound) {
                 nameNotFound.printStackTrace();
             } catch (InvalidInteractionClassHandle invalidInteractionClassHandle) {
